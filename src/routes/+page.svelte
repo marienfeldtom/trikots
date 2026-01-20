@@ -2,7 +2,7 @@
     import { genders, types } from '$lib/constants';
     export let data;
 
-    let filterGender = 'Alle';
+    let filterGender = 'Kinder';
     let filterType = 'Alle';
 
     // Pagination state
@@ -173,6 +173,36 @@
         flex: 1;
     }
 
+    /* Filter Tabs */
+    .tabs {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-bottom: 2rem;
+        background: #f1f5f9;
+        padding: 0.5rem;
+        border-radius: 12px;
+    }
+
+    .tab-btn {
+        flex: 1;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        background: transparent;
+        color: #64748b;
+        font-weight: 600;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: all 0.2s;
+        max-width: 150px;
+    }
+
+    .tab-btn.active {
+        background: white;
+        color: #068300;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
     .item-type {
         font-weight: 600;
         display: block;
@@ -256,6 +286,17 @@
 </div>
 
 <div class="container">
+    <div class="tabs">
+        {#each genders as g}
+            <button 
+                class="tab-btn {filterGender === g ? 'active' : ''}"
+                on:click={() => filterGender = g}
+            >
+                {g}
+            </button>
+        {/each}
+    </div>
+
     {#if filteredSets.length > 0}
         <h2 class="section-title">✨ Vollständige Sets</h2>
         <div class="sets-grid">
@@ -279,11 +320,10 @@
 
     <h2 class="section-title">Inventar Übersicht</h2>
     
+
+    
     <div class="filters">
-        <select bind:value={filterGender}>
-            <option value="Alle">Alle Geschlechter</option>
-            {#each genders as g}<option value={g}>{g}</option>{/each}
-        </select>
+        <!-- Gender filter moved to tabs -->
         
         <select bind:value={filterType}>
             <option value="Alle">Alle Typen</option>
