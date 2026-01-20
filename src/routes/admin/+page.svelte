@@ -8,6 +8,10 @@
     let number = '';
 </script>
 
+<svelte:head>
+    <title>Admin - TuRa Trikots</title>
+</svelte:head>
+
 <style>
     .container {
         padding: 1rem;

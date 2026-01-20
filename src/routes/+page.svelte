@@ -38,6 +38,10 @@
     }
 </script>
 
+<svelte:head>
+    <title>TuRa Handball Trikots</title>
+</svelte:head>
+
 <style>
     .header {
         background: white; /* Changed to white for logo */
