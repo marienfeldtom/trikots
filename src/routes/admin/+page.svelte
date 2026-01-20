@@ -1,6 +1,6 @@
 <script>
     import { enhance } from '$app/forms';
-    import { genders, sizes, types } from '$lib/constants';
+    import { genders, sizes, types, conditions } from '$lib/constants';
     export let data;
     
     let selectedGender = 'Herren';
@@ -16,7 +16,7 @@
     h1 {
         font-size: 1.5rem;
         margin-bottom: 1rem;
-        color: #27272a;
+        color: #068300; /* Replaced dark color with brand color */
     }
 
     .card {
@@ -28,6 +28,7 @@
         flex-direction: column;
         gap: 1rem;
         margin-bottom: 2rem;
+        border-top: 4px solid #068300; /* Added brand accent */
     }
 
     label {
@@ -47,7 +48,7 @@
     }
 
     button[type="submit"] {
-        background-color: #2563eb;
+        background-color: #068300; /* Updated brand color */
         color: white;
         font-weight: 600;
         padding: 0.75rem;
@@ -72,7 +73,12 @@
         justify-content: space-between;
         align-items: center;
         border: 1px solid #e4e4e7;
+        border-left: 4px solid #e4e4e7;
     }
+    
+    .item-card.condition-Wie-neu { border-left-color: #22c55e; }
+    .item-card.condition-Wenig-Backe { border-left-color: #eab308; }
+    .item-card.condition-Viel-Backe { border-left-color: #ef4444; }
 
     .info {
         display: flex;
@@ -81,7 +87,7 @@
     }
 
     .info strong {
-        color: #2563eb;
+        color: #068300; /* Updated brand color */
         font-size: 1.1rem;
     }
 
@@ -89,9 +95,18 @@
         font-size: 0.9rem;
         color: #52525b;
     }
+    
+    .info .condition-tag {
+        font-size: 0.75rem;
+        background: #f4f4f5;
+        padding: 0.1rem 0.4rem;
+        border-radius: 4px;
+        display: inline-block;
+        width: fit-content;
+    }
 
     .delete-btn {
-        background-color: #ef4444;
+        background-color: #dc2626;
         color: white;
         border: none;
         padding: 0.5rem 0.75rem;
@@ -138,6 +153,15 @@
             Nummer
             <input type="number" name="number" required placeholder="z.B. 7">
         </label>
+
+        <label>
+            Zustand
+            <select name="condition">
+                {#each conditions as condition}
+                    <option value={condition}>{condition}</option>
+                {/each}
+            </select>
+        </label>
         
         <button type="submit">Hinzufügen</button>
     </form>
@@ -145,11 +169,12 @@
     <h2>Inventar ({data.items.length})</h2>
     <div class="list">
         {#each data.items as item}
-            <div class="item-card">
+            <div class="item-card condition-{item.condition.replace(/\s+/g, '-')}">
                 <div class="info">
                     <strong>#{item.number}</strong>
                     <span>{item.type}</span>
                     <span>{item.size} • {item.gender}</span>
+                    <span class="condition-tag">{item.condition}</span>
                 </div>
                 <form method="POST" action="?/delete" use:enhance>
                     <input type="hidden" name="id" value={item.id}>

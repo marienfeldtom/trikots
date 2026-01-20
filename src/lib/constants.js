@@ -13,3 +13,9 @@ export const types = [
     'T-Shirt weiß',
     'T-Shirt schwarz'
 ];
+
+export const conditions = [
+    'Wie neu',
+    'Wenig Backe',
+    'Viel Backe'
+];

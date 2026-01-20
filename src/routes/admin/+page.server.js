@@ -14,13 +14,14 @@ export const actions = {
         const size = data.get('size');
         const number = parseInt(data.get('number'));
         const gender = data.get('gender');
+        const condition = data.get('condition');
 
-        if (!type || !size || !number || !gender) {
+        if (!type || !size || !number || !gender || !condition) {
             return fail(400, { missing: true });
         }
 
         try {
-            addItem({ type, size, number, gender });
+            addItem({ type, size, number, gender, condition });
             return { success: true };
         } catch (e) {
             return fail(500, { error: e.message });
