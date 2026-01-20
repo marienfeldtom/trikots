@@ -4,6 +4,10 @@
 
     let filterGender = 'Alle';
     let filterType = 'Alle';
+
+    // Pagination state
+    let currentPage = 1;
+    const itemsPerPage = 20;
     
     // Derived filtered items
     $: filteredItems = data.items.filter(item => {
@@ -11,6 +15,27 @@
         if (filterType !== 'Alle' && item.type !== filterType) return false;
         return true;
     });
+
+    // Reset pagination when filters change
+    $: if (filteredItems) currentPage = 1;
+
+    // Derived filtered sets
+    $: filteredSets = data.sets.filter(set => {
+        if (filterGender !== 'Alle' && set.gender !== filterGender) return false;
+        // Sets consist of 'T-Shirt weiß' and 'kurze Hose'.
+        // Show sets if type filter is 'Alle' OR matches one of the set components.
+        if (filterType !== 'Alle' && filterType !== 'T-Shirt weiß' && filterType !== 'kurze Hose') return false;
+        return true;
+    });
+
+    $: totalPages = Math.ceil(filteredItems.length / itemsPerPage);
+    $: paginatedItems = filteredItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+    function changePage(page) {
+        if (page >= 1 && page <= totalPages) {
+            currentPage = page;
+        }
+    }
 </script>
 
 <style>
@@ -179,6 +204,50 @@
         color: #64748b;
         text-decoration: none;
     }
+
+    .set-conditions {
+        margin-top: 0.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        font-size: 0.75rem;
+    }
+    
+    .set-cond-row {
+        display: flex;
+        justify-content: space-between;
+        background: #f1f5f9;
+        padding: 2px 6px;
+        border-radius: 4px;
+        color: #475569;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .page-btn {
+        background: white;
+        border: 1px solid #cbd5e1;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        cursor: pointer;
+        color: #0f172a;
+    }
+
+    .page-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .page-info {
+        font-size: 0.9rem;
+        color: #64748b;
+    }
 </style>
 
 <div class="header">
@@ -187,15 +256,22 @@
 </div>
 
 <div class="container">
-    {#if data.sets.length > 0}
+    {#if filteredSets.length > 0}
         <h2 class="section-title">✨ Vollständige Sets</h2>
         <div class="sets-grid">
-            {#each data.sets as set}
+            {#each filteredSets as set}
                 <div class="set-card">
                     <div class="set-number">{set.number}</div>
                     <div class="set-details">{set.size}</div>
                     <div class="badge">{set.gender}</div>
-                    <!-- Optional: Show condition mix if needed -->
+                    <div class="set-conditions">
+                        <div class="set-cond-row">
+                            <span>👕</span> <span>{set.shirt_condition}</span>
+                        </div>
+                        <div class="set-cond-row">
+                            <span>🩳</span> <span>{set.shorts_condition}</span>
+                        </div>
+                    </div>
                 </div>
             {/each}
         </div>
@@ -216,7 +292,7 @@
     </div>
 
     <div class="inventory-list">
-        {#each filteredItems as item}
+        {#each paginatedItems as item}
             <div class="item-row condition-{item.condition.replace(/\s+/g, '-')}">
                 <div class="item-number">{item.number}</div>
                 <div class="item-info">
@@ -230,6 +306,19 @@
             <p style="text-align: center; color: #94a3b8; padding: 2rem;">Keine Trikots gefunden.</p>
         {/if}
     </div>
+
+    <!-- Pagination -->
+    {#if totalPages > 1}
+        <div class="pagination">
+            <button class="page-btn" disabled={currentPage === 1} on:click={() => changePage(currentPage - 1)}>
+                &larr; Zurück
+            </button>
+            <span class="page-info">Seite {currentPage} von {totalPages}</span>
+            <button class="page-btn" disabled={currentPage === totalPages} on:click={() => changePage(currentPage + 1)}>
+                Weiter &rarr;
+            </button>
+        </div>
+    {/if}
 
     <footer>
         <a href="/admin">Admin Login</a>

@@ -2,8 +2,10 @@
     import { enhance } from '$app/forms';
     import { genders, sizes, types, conditions } from '$lib/constants';
     export let data;
+    export let form;
     
     let selectedGender = 'Herren';
+    let number = '';
 </script>
 
 <style>
@@ -114,12 +116,45 @@
         font-size: 0.8rem;
         cursor: pointer;
     }
+
+    .login-form {
+        max-width: 400px;
+        margin: 4rem auto;
+    }
+
+    .error {
+        color: #dc2626;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+    }
 </style>
 
 <div class="container">
+    {#if !data.authenticated}
+        <h1>Admin Login</h1>
+        <form method="POST" action="?/login" use:enhance class="card login-form">
+            <label>
+                Passwort
+                <input type="password" name="password" required placeholder="Passwort eingeben">
+            </label>
+            {#if form?.incorrect}
+                <p class="error">Falsches Passwort - Bitte "turam" eingeben</p>
+            {/if}
+            <button type="submit">Anmelden</button>
+        </form>
+    {:else}
     <h1>Admin: TuRa Trikots</h1>
     
-    <form method="POST" action="?/add" use:enhance class="card">
+    <form method="POST" action="?/add" class="card" use:enhance={() => {
+        return async ({ result, update }) => {
+            if (result.type === 'success') {
+                await update({ reset: false });
+                number = '';
+            } else {
+                await update();
+            }
+        };
+    }}>
         <h2>Neues Teil hinzufügen</h2>
         
         <label>
@@ -151,7 +186,7 @@
         
         <label>
             Nummer
-            <input type="number" name="number" required placeholder="z.B. 7">
+            <input type="number" name="number" required placeholder="z.B. 7" bind:value={number}>
         </label>
 
         <label>
@@ -183,4 +218,5 @@
             </div>
         {/each}
     </div>
+    {/if}
 </div>
