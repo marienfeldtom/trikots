@@ -8,7 +8,7 @@ db.exec(`
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     type TEXT NOT NULL,
     size TEXT NOT NULL,
-    number INTEGER NOT NULL,
+    number INTEGER,
     gender TEXT NOT NULL,
     condition TEXT NOT NULL DEFAULT 'Wie neu',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP

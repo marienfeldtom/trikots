@@ -186,7 +186,7 @@
         
         <label>
             Nummer
-            <input type="number" name="number" required placeholder="z.B. 7" bind:value={number}>
+            <input type="number" name="number" placeholder="z.B. 7" bind:value={number}>
         </label>
 
         <label>
@@ -206,7 +206,7 @@
         {#each data.items as item}
             <div class="item-card condition-{item.condition.replace(/\s+/g, '-')}">
                 <div class="info">
-                    <strong>#{item.number}</strong>
+                    <strong>#{item.number ?? '-'}</strong>
                     <span>{item.type}</span>
                     <span>{item.size} • {item.gender}</span>
                     <span class="condition-tag">{item.condition}</span>

@@ -32,11 +32,12 @@ export const actions = {
         const data = await request.formData();
         const type = data.get('type');
         const size = data.get('size');
-        const number = parseInt(data.get('number'));
+        const numberInput = data.get('number');
+        const number = numberInput ? parseInt(numberInput) : null;
         const gender = data.get('gender');
         const condition = data.get('condition');
 
-        if (!type || !size || !number || !gender || !condition) {
+        if (!type || !size || !gender || !condition) {
             return fail(400, { missing: true });
         }
 

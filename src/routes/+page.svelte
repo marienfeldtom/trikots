@@ -334,7 +334,7 @@
     <div class="inventory-list">
         {#each paginatedItems as item}
             <div class="item-row condition-{item.condition.replace(/\s+/g, '-')}">
-                <div class="item-number">{item.number}</div>
+                <div class="item-number">{item.number ?? '-'}</div>
                 <div class="item-info">
                     <span class="item-type">{item.type}</span>
                     <span class="item-meta">{item.size} • {item.gender}</span>
